@@ -1,0 +1,93 @@
+﻿@model  DisplayWordFromCurrencyAndName.Models.Employee
+
+@{
+    ViewBag.Title = "Home Page";
+}
+<script src="~/Scripts/jquery-1.10.2.min.js"></script>
+
+<div class="row">
+    <div class="col-sm-2">
+        @Html.LabelFor(x => x.EmpName, new { id="lblEmpName" })
+
+        @Html.ValidationMessageFor(x=>x.EmpName)
+        @Html.TextBoxFor(x => x.EmpName, new { id = "txtEmpName" })
+    </div>
+    <div class="col-sm-2 row">
+        @Html.LabelFor(x => x.Currency, new { id = "lblCurrency" })
+
+        @Html.ValidationMessageFor(x => x.Currency)
+        @Html.TextBoxFor(x => x.Currency, new { id = "txtCurrency" })
+    </div>
+
+</div>
+
+<br/> <br />
+<div>
+    <input type="button" value="Convert" id="btnConvert" />
+</div>
+
+
+
+<br/><br/>
+
+
+<div id="dvOutput" class="row" style="display:none;">
+    <div class="col-sm-2">
+        @Html.Label("Output:")
+    </div>
+    <div class="col-sm-2 row">
+        @Html.Label("Employee Name")
+
+        <p id="pName"></p>
+
+        <br /><br />
+
+        @Html.Label("Currency")
+
+        <p id="pCurrency"></p>
+    </div>
+</div>
+
+<script>
+    
+    $(function () {
+        //Convert button click event for convert the no in to word.
+        $("#btnConvert").click(function () {
+            var empName=$("#txtEmpName").val();
+            var currency = $("#txtCurrency").val();
+            if (empName === null || empName == "") {
+                alert("Please enter the value in employee name.");
+                return false;
+            }
+            if (currency === null || currency == "") {
+                alert("Please enter the value in currency.");
+                return false;
+            }
+            
+            if (isNaN(currency)) {
+                alert("Please enter only number in currency.");
+                return false;
+            }
+
+            $.ajax({
+                type: "get",
+                url: "/api/Values/" + currency + "/",
+                contentType: "application/json;charset=utf-8",
+                dataType:"json",
+                success: function (data) {
+                    debugger
+                    $("#pName").text(empName);
+                    $("#pCurrency").text(data);
+                    $("#dvOutput").css("display", "block");
+                    
+                },
+
+            });
+
+
+        });
+
+    });
+
+
+</script>
